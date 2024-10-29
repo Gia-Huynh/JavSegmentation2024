@@ -128,16 +128,3 @@ def startTraining (num_epochs):
     
 startTraining(num_epochs)
 
-"""
-#v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) #for [0-255]: [118.87464   91.888504  84.19272 ]   [59.870434 54.635265 51.617016]
-#preprocess = weights.transforms()
-#Dataset = SexDataset ("G:\\jav folder\\OutputFolder", preprocess, augmented = True)
-img = read_image("G:/jav folder/Mini Test Frames/BLK-537/frame272160.png")
-#to_pil_image(model(preprocess(read_image(image_path)).unsqueeze(0).to(device))['out'].softmax(dim=1)[:,class_to_idx["person"],:,:][0]).show()
-
-batch = preprocess(img).unsqueeze(0)
-prediction = model(batch)["out"]
-normalized_masks = prediction.softmax(dim=1)
-mask = normalized_masks[0, class_to_idx["person"]]
-to_pil_image(mask).show()
-"""
