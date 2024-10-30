@@ -1,9 +1,16 @@
-import torch.utils.data as data
 import cv2
 import glob
 import os
 import torch
 import numpy as np
+import torch.utils.data as data
+from torchvision.io.image import read_image
+from torchvision.transforms import v2
+from torchvision import tv_tensors
+
+mean = [0.46617496, 0.36034706, 0.33016744]
+std = [0.23478602, 0.21425594, 0.20241965]
+
 class SexBaseDataset(data.Dataset):
     def __init__(self, folder_path):
         super(SexBaseDataset, self).__init__()
@@ -24,3 +31,40 @@ class SexBaseDataset(data.Dataset):
         return len(self.img_files)
 
 #DataLoader = SexBaseDataset ("G:\\jav folder\\OutputFolder")
+
+class SexDataset(SexBaseDataset):
+    def __init__(self, folder_path, transforms=None, augmented = False):
+        super().__init__(folder_path)
+        self.transforms = transforms
+        self.augmented = augmented    
+        if self.transforms is None:
+            self.transforms = v2.Compose([    
+                #v2.ToDtype(torch.float32, scale=True), #Auto scale from 0-255 to 0.0-1.0
+                v2.Normalize(mean=mean, std=std)
+            ])
+        if self.augmented == True:
+            self.augmentPosition = v2.Compose([                
+                v2.RandomHorizontalFlip(0.5),
+                v2.RandomVerticalFlip(0.15),
+                v2.RandomRotation(degrees = 5),
+                v2.RandomAffine(degrees = 5),
+                v2.RandomPerspective(distortion_scale=0.15, p=0.80)
+            ])
+            self.augmentColour = v2.Compose([
+                v2.ColorJitter(brightness=0.35, contrast = 0.25, saturation = 0.1, hue = 0.04),
+                v2.GaussianNoise(mean = 0, sigma = 0.01) #default sigma 0.1
+            ])
+    # Override the __getitem__ method
+    def __getitem__(self, idx):
+        # Call the parent class's __getitem__ to get the default behavior
+        image, mask = super().__getitem__(idx)
+        #print (torch.min(mask),' ',torch.max(mask))
+        image = v2.functional.to_dtype (image, scale = True)
+        if self.augmented == True:
+            image = self.augmentColour(tv_tensors.Image(image))
+            image, mask = self.augmentPosition (tv_tensors.Image(image), tv_tensors.Mask(mask)) 
+        if self.transforms is not None:
+            image = self.transforms(image)
+        mask = mask[0,:,:]/255
+        #print (torch.min(mask),'_',torch.max(mask))
+        return image, mask
