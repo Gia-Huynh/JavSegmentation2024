@@ -52,7 +52,7 @@ class SexDataset(SexBaseDataset):
             ])
             self.augmentColour = v2.Compose([
                 v2.ColorJitter(brightness=0.35, contrast = 0.25, saturation = 0.1, hue = 0.04),
-                v2.GaussianNoise(mean = 0, sigma = 0.01) #default sigma 0.1
+                v2.GaussianNoise(mean = 0, sigma = 0.03) #default sigma 0.1
             ])
     # Override the __getitem__ method
     def __getitem__(self, idx):
