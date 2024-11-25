@@ -1,2 +1,7 @@
 PredictOutput/*.png 
 TrainPredict/*.png 
+/TrainPredict
+*.pt
+/__pycache__
+*.mp4
+*.mov

@@ -46,19 +46,18 @@ class SexDataset(SexBaseDataset):
             self.augmentPosition = v2.Compose([                
                 v2.RandomHorizontalFlip(0.5),
                 v2.RandomVerticalFlip(0.15),
-                v2.RandomRotation(degrees = 5),
-                v2.RandomAffine(degrees = 5),
+                v2.RandomRotation(degrees = 6),
+                v2.RandomAffine(degrees = 6),
                 v2.RandomPerspective(distortion_scale=0.15, p=0.80)
             ])
             self.augmentColour = v2.Compose([
-                v2.ColorJitter(brightness=0.35, contrast = 0.25, saturation = 0.1, hue = 0.04),
-                v2.GaussianNoise(mean = 0, sigma = 0.03) #default sigma 0.1
+                v2.ColorJitter(brightness=0.4, contrast = 0.25, saturation = 0.1, hue = 0.04),
+                v2.GaussianNoise(mean = 0, sigma = 0.02) #default sigma 0.1
             ])
     # Override the __getitem__ method
     def __getitem__(self, idx):
         # Call the parent class's __getitem__ to get the default behavior
         image, mask = super().__getitem__(idx)
-        #print (torch.min(mask),' ',torch.max(mask))
         image = v2.functional.to_dtype (image, scale = True)
         if self.augmented == True:
             image = self.augmentColour(tv_tensors.Image(image))
@@ -66,5 +65,4 @@ class SexDataset(SexBaseDataset):
         if self.transforms is not None:
             image = self.transforms(image)
         mask = mask[0,:,:]/255
-        #print (torch.min(mask),'_',torch.max(mask))
         return image, mask

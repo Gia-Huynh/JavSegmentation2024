@@ -58,7 +58,7 @@ def predict_and_save(model, image_folder, output_folder):
 
 # Main script
 if __name__ == "__main__":
-    model_path = 'L:/Jav Segmentation 2024/models/fuckmodel.pt'
+    model_path = 'L:/Jav Segmentation 2024/models/bestmodel.pt'
     image_folder = 'G:/jav folder/OutputFolder/image'
     output_folder = './PredictOutput'
 
