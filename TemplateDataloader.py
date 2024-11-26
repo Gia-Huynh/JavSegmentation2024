@@ -51,8 +51,8 @@ class SexDataset(SexBaseDataset):
                 v2.RandomPerspective(distortion_scale=0.15, p=0.80)
             ])
             self.augmentColour = v2.Compose([
-                v2.ColorJitter(brightness=0.4, contrast = 0.25, saturation = 0.1, hue = 0.04),
-                v2.GaussianNoise(mean = 0, sigma = 0.02) #default sigma 0.1
+                v2.ColorJitter(brightness=0.5, contrast = 0.4, saturation = 0.2, hue = 0.04),
+                v2.GaussianNoise(mean = 0, sigma = 0.015) #default sigma 0.1
             ])
     # Override the __getitem__ method
     def __getitem__(self, idx):
